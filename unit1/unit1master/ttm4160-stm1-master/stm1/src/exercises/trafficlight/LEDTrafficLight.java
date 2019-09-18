@@ -14,7 +14,7 @@ public class LEDTrafficLight extends JFrame {
 	private Signal yellow = new Signal(Color.yellow);
 	private Signal red = new Signal(Color.red);
 
-	public TrafficLight(String title, boolean showYellow){
+	public LEDTrafficLight(String title, boolean showYellow){
 		super(title);
 		getContentPane().setLayout(new GridLayout(1, 1));
 		green.turnOn(false);
