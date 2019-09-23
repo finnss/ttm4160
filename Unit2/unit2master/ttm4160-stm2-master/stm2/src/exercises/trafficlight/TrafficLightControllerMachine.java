@@ -5,6 +5,8 @@ import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
 
+import static exercises.trafficlight.TrafficLightPI.TrafficLightsTypes;
+
 public class TrafficLightControllerMachine implements IStateMachine {
 
 	private static final String PEDESTRIAN_BUTTON_PRESSED = "Pedestrian Button",
@@ -32,8 +34,8 @@ public class TrafficLightControllerMachine implements IStateMachine {
 
 	protected STATES state = STATES.S0;
 
-	private TrafficLightPI pedestrians = new TrafficLightPI("Pedestrians", false);
-	private TrafficLightPI cars = new TrafficLightPI("Cars", true);
+	private TrafficLightPI cars = new TrafficLightPI(TrafficLightsTypes[0], true);
+	private TrafficLightPI pedestrians = new TrafficLightPI(TrafficLightsTypes[1], false);
 
 	private boolean pedestrianButtonIsPressed = false;
 

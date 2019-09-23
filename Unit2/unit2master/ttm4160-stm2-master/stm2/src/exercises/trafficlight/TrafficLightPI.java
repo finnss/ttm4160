@@ -6,9 +6,9 @@ import java.lang.*;
 
 public class TrafficLightPI implements TrafficLight {
 
-    private static String CAR = "Car", PED = "Ped";
+    private static String CAR = "Cars", PED = "Pedestrians";
 
-    private static final String[] TrafficLightsTypes = {CAR, PED};
+    public static final String[] TrafficLightsTypes = {CAR, PED};
 
     private GpioPinDigitalOutput LedRed = null;
     private GpioPinDigitalOutput LedYellow = null;
