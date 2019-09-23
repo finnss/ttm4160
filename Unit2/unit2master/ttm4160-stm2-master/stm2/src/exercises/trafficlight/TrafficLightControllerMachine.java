@@ -32,8 +32,8 @@ public class TrafficLightControllerMachine implements IStateMachine {
 
 	protected STATES state = STATES.S0;
 
-	private TrafficLightPI cars = new TrafficLightPI("Cars", true);
 	private TrafficLightPI pedestrians = new TrafficLightPI("Pedestrians", false);
+	private TrafficLightPI cars = new TrafficLightPI("Cars", true);
 
 	private boolean pedestrianButtonIsPressed = false;
 

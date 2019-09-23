@@ -27,8 +27,7 @@ public class TrafficLightPI implements TrafficLight {
 
         //initialization pedestrians    
         } else {
-            // LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LedPedRed", PinState.LOW);
-            LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "LedCarRed", PinState.LOW);
+            LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LedPedRed", PinState.LOW);
             LedYellow = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_12, "LedPedYellow", PinState.LOW);
             LedGreen = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "LedPedGreen", PinState.LOW);
 
