@@ -11,9 +11,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+
+import static exercises.trafficlight.TrafficLightControllerMachine.EXTERNAL_SYNC;
 
 public class CoordinatedTrafficLights implements IStateMachine {
 
@@ -32,6 +35,8 @@ public class CoordinatedTrafficLights implements IStateMachine {
 
     protected STATES state = STATES.START_STATE;
 
+    PrintWriter out1, out2, out3;
+
     @Override
     public int fire(String event, Scheduler scheduler) {
         if(state==STATES.START_STATE) {
@@ -48,6 +53,12 @@ public class CoordinatedTrafficLights implements IStateMachine {
         } else if(state==STATES.CYCLE_1_WAIT) {
             if (event.equals(TIMER_1)) {
                 // Send trigger 1/2
+                if (out1 != null && out2 != null) {
+                    out1.println(EXTERNAL_SYNC);
+                    out2.println(EXTERNAL_SYNC);
+                } else {
+                    System.out.println("Connections 1 and/or 2 have not been set up yet.");
+                }
                 t1.start(scheduler, CYCLE_TIME);
                 state = STATES.CYCLE_2_WAIT;
                 return EXECUTE_TRANSITION;
@@ -55,43 +66,70 @@ public class CoordinatedTrafficLights implements IStateMachine {
         } else if(state==STATES.CYCLE_2_WAIT) {
             if (event.equals(TIMER_3)) {
                 // Send trigger 3
+                if (out3 != null) {
+                    out3.println(EXTERNAL_SYNC);
+                } else {
+                    System.out.println("Connection 3 has not been set up yet.");
+                }
                 t3.start(scheduler, CYCLE_TIME);
                 state = STATES.CYCLE_1_WAIT;
                 return EXECUTE_TRANSITION;
             }
         }
+        return DISCARD_EVENT;
     }
 
 
     public static void main(String[] args) {
-        IStateMachine synchronizer = new CoordinatedTrafficLights();
+        CoordinatedTrafficLights synchronizer = new CoordinatedTrafficLights();
         Scheduler s = new Scheduler(synchronizer);
         s.start();
 
-        List<String> hostNames = new ArrayList();
-        hostNames.add("192.168.0.186");
-        hostNames.add("");
-        hostNames.add("");
-        int portNumber = 3131313;
+        int portNumber = 4325;
 
-        for (String hostname : hostNames) {
-            try {
-                Socket clientSocket = new Socket(hostname, portNumber);
-                // hostname: A string containing the computer name or IP address of the server
-                // portNumber: An integer containing a port number 4 above 1024 supported by the server
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                out.println("toServer"); // Write string toServer to the 8server
+        try {
+            ServerSocket serverSocket = new ServerSocket( portNumber);
+            System.out.println("Listening on port " + portNumber + "...");
+            // portNumber: An integer containing a port number 3 above 1024 to be accessed by the clients
+            Socket clientSocket1 = serverSocket.accept();
+            // Wait for a call from a client
+            Socket clientSocket2 = serverSocket.accept();
+            // Wait for a call from another client
+            Socket clientSocket3 = serverSocket.accept();
+            // Wait for a call from another client
+            PrintWriter out1 = new PrintWriter(clientSocket1.getOutputStream(), true);
+            synchronizer.out1 = out1;
+            BufferedReader in1 = new BufferedReader(new InputStreamReader(clientSocket1.getInputStream()));
+            PrintWriter out2 = new PrintWriter(clientSocket2.getOutputStream(), true);
+            synchronizer.out2 = out2;
+            BufferedReader in2 = new BufferedReader(new InputStreamReader(clientSocket2.getInputStream()));
+            PrintWriter out3 = new PrintWriter(clientSocket3.getOutputStream(), true);
+            synchronizer.out3 = out3;
+            BufferedReader in3 = new BufferedReader(new InputStreamReader(clientSocket3.getInputStream()));
 
-                //while ((fromServer = in.readLine()) != null) {
-                //    doSomething(fromServer);
-                //} // Continuously read the input from the connection, 12 write a received string to variable fromServer,
-                // and carry out doSomething(fromServer) afterwards.
-            } catch (IOException e) {
-                System.out.println("Exception caught when trying to 16 listen on port "
-                        + portNumber + " or listening for a connection");
-                System.out.println(e.getMessage());
+            out1.println("Hello client 1"); // Write string toClient1 to  the first client
+            out2.println("Hello client 2"); // Write string toClient1 to 13 the first client
+            out3.println("Hello client 3"); // Write string toClient1 to 13 the first client
+
+            String fromClient1, fromClient2 = null, fromClient3 = null;
+            while (
+                    (fromClient1 = in1.readLine()) != null ||
+                    (fromClient2 = in2.readLine()) != null ||
+                    (fromClient3 = in3.readLine()) != null) {
+                // doSomething(fromClient1, fromClient2, fromClient3);
+                System.out.println("Message received at server from one of the clients:");
+                System.out.println(
+                          fromClient1 != null ? "Client 1: " + fromClient1
+                        : fromClient2 != null ? "Client 2: " + fromClient2
+                        : "Client 3: " + fromClient3);
+                System.out.println();
             }
+            // Continuously read the input from the clients,7write a received string to variable fromClient1 orfromClient2,
+            // and carry out doSomething(fromClient1, 18 fromClient2) if a string is received from one of the clients.
+        } catch (IOException e) {
+            System.out.println("Exception caught when trying to listen on port "
+                            + portNumber + " or listening for a connection");
+            System.out.println(e.getMessage());
         }
 
     }
