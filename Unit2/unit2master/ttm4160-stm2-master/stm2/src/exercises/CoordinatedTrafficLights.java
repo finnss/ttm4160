@@ -69,7 +69,7 @@ public class CoordinatedTrafficLights implements IStateMachine {
         s.start();
 
         List<String> hostNames = new ArrayList();
-        hostNames.add("");
+        hostNames.add("192.168.0.186");
         hostNames.add("");
         hostNames.add("");
         int portNumber = 3131313;
@@ -83,9 +83,9 @@ public class CoordinatedTrafficLights implements IStateMachine {
                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 out.println("toServer"); // Write string toServer to the 8server
 
-                while ((fromServer = in.readLine()) != null) {
-                    doSomething(fromServer);
-                } // Continuously read the input from the connection, 12 write a received string to variable fromServer,
+                //while ((fromServer = in.readLine()) != null) {
+                //    doSomething(fromServer);
+                //} // Continuously read the input from the connection, 12 write a received string to variable fromServer,
                 // and carry out doSomething(fromServer) afterwards.
             } catch (IOException e) {
                 System.out.println("Exception caught when trying to 16 listen on port "
