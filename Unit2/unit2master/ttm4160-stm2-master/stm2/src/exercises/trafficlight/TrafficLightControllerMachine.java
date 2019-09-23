@@ -40,7 +40,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 	public TrafficLightControllerMachine() {
 		// initial transition
 		cars.showGreen();
-		pedestrians.showRed();
+		pedestrians.showYellow();
 	}
 
 	public int fire(String event, Scheduler scheduler) {
@@ -114,6 +114,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 		}
 		return DISCARD_EVENT;
 	}
+
 
 	public static void main(String[] args) {
 		IStateMachine stm = new TrafficLightControllerMachine();
