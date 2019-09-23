@@ -13,12 +13,13 @@ public class TrafficLightPI implements TrafficLight {
     private GpioPinDigitalOutput LedRed = null;
     private GpioPinDigitalOutput LedYellow = null;
     private GpioPinDigitalOutput LedGreen = null;
+    private GpioPinDigitalOutput LedRedPed = null;
     private GpioPinDigitalOutput Buzzer = null;
 
     public TrafficLightPI(String type, Boolean on){
         // create gpio controller instance
         final GpioController gpio = GpioFactory.getInstance();
-
+        
         //initialization cars
         if (type == TrafficLightsTypes[0]) {
             LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "LedCarRed", PinState.LOW);
@@ -27,7 +28,7 @@ public class TrafficLightPI implements TrafficLight {
 
         //initialization pedestrians    
         } else {
-            LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LedPedRed", PinState.LOW);
+            LedRedPed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LedPedRed", PinState.LOW);
             LedYellow = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_12, "LedPedYellow", PinState.LOW);
             LedGreen = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "LedPedGreen", PinState.LOW);
 
