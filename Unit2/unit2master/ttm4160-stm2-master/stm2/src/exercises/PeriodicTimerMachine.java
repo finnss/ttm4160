@@ -1,6 +1,5 @@
 package exercises;
 
-import runtime.EventWindow;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
@@ -51,9 +50,6 @@ public class PeriodicTimerMachine implements IStateMachine {
 	public static void main(String[] args) {
 		IStateMachine stm = new PeriodicTimerMachine();
 		Scheduler s = new Scheduler(stm);
-		
-		EventWindow w = new EventWindow(EVENTS, s);
-		w.show();
 
 		s.start();
 	}

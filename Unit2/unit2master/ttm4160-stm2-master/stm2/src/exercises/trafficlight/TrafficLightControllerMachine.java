@@ -1,7 +1,6 @@
 package exercises.trafficlight;
 
 import com.pi4j.io.gpio.*;
-import runtime.EventWindow;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
