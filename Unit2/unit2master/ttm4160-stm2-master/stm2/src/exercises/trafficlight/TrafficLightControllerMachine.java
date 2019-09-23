@@ -128,10 +128,8 @@ public class TrafficLightControllerMachine implements IStateMachine {
 		PedButtonListener buttonListener = new PedButtonListener(s);
 		myButton.addListener(buttonListener);
 
-		EventWindow w = new EventWindow(EVENTS, s);
-		w.show();
-
 		s.start();
 	}
+
 
 }
