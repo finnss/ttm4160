@@ -1,6 +1,8 @@
 package exercises.trafficlight;
 
 import com.pi4j.io.gpio.*;
+import runtime.Scheduler;
+
 import java.util.*;
 import java.lang.*;
 

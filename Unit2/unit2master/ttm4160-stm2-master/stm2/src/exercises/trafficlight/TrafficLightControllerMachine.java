@@ -1,5 +1,6 @@
 package exercises.trafficlight;
 
+import com.pi4j.io.gpio.*;
 import runtime.EventWindow;
 import runtime.IStateMachine;
 import runtime.Scheduler;
@@ -9,7 +10,7 @@ import static exercises.trafficlight.TrafficLightPI.TrafficLightsTypes;
 
 public class TrafficLightControllerMachine implements IStateMachine {
 
-	private static final String PEDESTRIAN_BUTTON_PRESSED = "Pedestrian Button",
+	public static final String PEDESTRIAN_BUTTON_PRESSED = "Pedestrian Button",
 	TIMER_1 = "t1", TIMER_2 = "t2", TIMER_3 = "t3", TIMER_4 = "t4", TIMER_5 = "t5", TIMER_6 = "t6";
 
 	public static final String[] EVENTS = {PEDESTRIAN_BUTTON_PRESSED};
@@ -42,7 +43,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 	public TrafficLightControllerMachine() {
 		// initial transition
 		cars.showGreen();
-		pedestrians.showYellow();
+		pedestrians.showRed();
 	}
 
 	public int fire(String event, Scheduler scheduler) {
@@ -119,8 +120,13 @@ public class TrafficLightControllerMachine implements IStateMachine {
 
 
 	public static void main(String[] args) {
-		IStateMachine stm = new TrafficLightControllerMachine();
+		TrafficLightControllerMachine stm = new TrafficLightControllerMachine();
 		Scheduler s = new Scheduler(stm);
+
+		final GpioController gpio = GpioFactory.getInstance();
+		final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_11, PinPullResistance.PULL_DOWN);
+		PedButtonListener buttonListener = new PedButtonListener(s);
+		myButton.addListener(buttonListener);
 
 		EventWindow w = new EventWindow(EVENTS, s);
 		w.show();
