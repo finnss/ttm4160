@@ -30,7 +30,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 	private Timer t6 = new Timer("t6");
 
 	private final int
-		CYCLE_TIME = 60000,
+		CYCLE_TIME = 55000,
 		CAR_YELLOW_TIME = 4000,
 		BOTH_RED_TIME_1 = 4000,
 		BOTH_RED_TIME_2 = 5000,
