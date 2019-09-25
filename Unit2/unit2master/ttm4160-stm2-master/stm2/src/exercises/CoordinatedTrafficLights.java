@@ -107,9 +107,9 @@ public class CoordinatedTrafficLights implements IStateMachine {
             synchronizer.out3 = out3;
             BufferedReader in3 = new BufferedReader(new InputStreamReader(clientSocket3.getInputStream()));
 
-            out1.println("Hello client 1"); // Write string toClient1 to  the first client
-            out2.println("Hello client 2"); // Write string toClient1 to 13 the first client
-            out3.println("Hello client 3"); // Write string toClient1 to 13 the first client
+            out1.write("Hello client 1"); // Write string toClient1 to  the first client
+            out2.write("Hello client 2"); // Write string toClient1 to 13 the first client
+            out3.write("Hello client 3"); // Write string toClient1 to 13 the first client
             out1.flush();
             out2.flush();
             out3.flush();

@@ -143,7 +143,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			// portNumber: An integer containing a port number 4 above 1024 supported by the server
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			out.println("toServer"); // Write string toServer to the 8server
+			out.write("toServer"); // Write string toServer to the server
 			out.flush();
 
 			System.out.println("(probably) Successfully connected");
