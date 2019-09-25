@@ -83,15 +83,15 @@ public class TrafficLightPI implements TrafficLight {
             while (true) {
                 try {
                     if (on) {
-                        System.out.println("Buzzer low");
+                        // System.out.println("Buzzer low");
                         Buzzer.low();
-                        Thread.sleep(1);
+                        Thread.sleep(10);
                         on = false;
                     } else {
                         on = true;
-                        System.out.println("Buzzer high");
+                        // System.out.println("Buzzer high");
                         Buzzer.high();
-                        Thread.sleep(1);
+                        Thread.sleep(10);
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
