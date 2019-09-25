@@ -157,8 +157,8 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			} // Continuously read the input from the connection, 12 write a received string to variable fromServer,
 			// and carry out doSomething(fromServer) afterwards.
 		} catch (IOException e) {
-			System.out.println("Exception caught when trying to 16 listen on port "
-					+ portNumber + " or listening for a connection");
+			System.out.println("Exception caught when attempting to connect to port "
+					+ portNumber + ", or other IO exception:");
 			System.out.println(e.getMessage());
 		}
 	}
