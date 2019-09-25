@@ -110,11 +110,18 @@ public class CoordinatedTrafficLights implements IStateMachine {
             out1.write("Hello client 1"); // Write string toClient1 to  the first client
             out2.write("Hello client 2"); // Write string toClient1 to 13 the first client
             out3.write("Hello client 3"); // Write string toClient1 to 13 the first client
+            out1.println("Hello client 1"); // Write string toClient1 to  the first client
+            out2.println("Hello client 2"); // Write string toClient1 to 13 the first client
+            out3.println("Hello client 3"); // Write string toClient1 to 13 the first client
             out1.flush();
             out2.flush();
             out3.flush();
 
             String fromClient1, fromClient2 = null, fromClient3 = null;
+            System.out.println("Debugging before loop");
+            System.out.println(in1.readLine());
+            System.out.println(in2.readLine());
+            System.out.println(in3.readLine());
             while (
                     (fromClient1 = in1.readLine()) != null ||
                     (fromClient2 = in2.readLine()) != null ||
@@ -127,6 +134,7 @@ public class CoordinatedTrafficLights implements IStateMachine {
                         : "Client 3: " + fromClient3);
                 System.out.println();
             }
+            System.out.println("Debugging after loop");
             // Continuously read the input from the clients,7write a received string to variable fromClient1 orfromClient2,
             // and carry out doSomething(fromClient1, 18 fromClient2) if a string is received from one of the clients.
         } catch (IOException e) {
