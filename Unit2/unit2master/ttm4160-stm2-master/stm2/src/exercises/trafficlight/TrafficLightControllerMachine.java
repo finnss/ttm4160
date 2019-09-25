@@ -72,7 +72,6 @@ public class TrafficLightControllerMachine implements IStateMachine {
 					return EXECUTE_TRANSITION;
 				}
 			} else if (event.equals(PEDESTRIAN_BUTTON_PRESSED)) {
-				pedestrians.startBuzzer(BUZZER_FREQUENCY);
 				pedestrianButtonIsPressed = true;
 				state = STATES.S0;
 				return EXECUTE_TRANSITION;
@@ -96,6 +95,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			if (event.equals(TIMER_3)) {
 				pedestrians.showRed();
 				pedestrians.stopBuzzer();
+				pedestrians.startBuzzer(BUZZER_FREQUENCY_SLOW);
 				t4.start(scheduler, BOTH_RED_TIME_2);
 				state = STATES.S4;
 				return EXECUTE_TRANSITION;
@@ -106,6 +106,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			}
 		} else if(state==STATES.S4) {
 			if (event.equals(TIMER_4)) {
+				pedestrians.stopBuzzer();
 				cars.showRedYellow();
 				t5.start(scheduler, CAR_RED_YELLOW_TIME);
 				state = STATES.S5;
