@@ -30,6 +30,9 @@ public class TrafficLightControllerMachine implements IStateMachine {
 	private Timer t5 = new Timer("t5");
 	private Timer t6 = new Timer("t6");
 
+	private static int BUZZER_FREQUENCY = 1000; // Hertz
+	private static int BUZZER_FREQUENCY_SLOW = 2000;
+
 	private final int
 		CYCLE_TIME = 55000,
 		CAR_YELLOW_TIME = 4000,
@@ -69,7 +72,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 					return EXECUTE_TRANSITION;
 				}
 			} else if (event.equals(PEDESTRIAN_BUTTON_PRESSED)) {
-				pedestrians.startBuzzer();
+				pedestrians.startBuzzer(BUZZER_FREQUENCY);
 				pedestrianButtonIsPressed = true;
 				state = STATES.S0;
 				return EXECUTE_TRANSITION;
@@ -84,7 +87,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 		} else if(state==STATES.S2) {
 			if (event.equals(TIMER_2)) {
 				pedestrians.showGreen();
-				pedestrians.startBuzzer();
+				pedestrians.startBuzzer(BUZZER_FREQUENCY);
 				t3.start(scheduler, PEDESTRIAN_GREEN_TIME);
 				state = STATES.S3;
 				return EXECUTE_TRANSITION;
