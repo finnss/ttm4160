@@ -144,6 +144,9 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 			out.println("toServer"); // Write string toServer to the 8server
+			out.flush();
+
+			System.out.println("(probably) Successfully connected");
 
 			String fromServer;
 			while ((fromServer = in.readLine()) != null) {
