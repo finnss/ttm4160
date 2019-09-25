@@ -32,9 +32,8 @@ public class TrafficLightPI implements TrafficLight {
             LedRed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "LedPedRed", PinState.LOW);
             LedYellow = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_12, "LedPedYellow", PinState.LOW);
             LedGreen = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_14, "LedPedGreen", PinState.LOW);
-
-            Buzzer = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "Buzzer", PinState.LOW);
         }
+        Buzzer = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "Buzzer", PinState.LOW);
 
         if (on) {
             LedGreen.toggle();
@@ -75,6 +74,22 @@ public class TrafficLightPI implements TrafficLight {
             LedGreen.low();
         }
 	}
+
+    public void startBuzzer() {
+        if(Buzzer==null) {
+            throw new UnsupportedOperationException("Traffic light has no Buzzer.");
+        } else{
+            Buzzer.high();
+        }
+    }
+
+    public void stopBuzzer() {
+        if(Buzzer==null) {
+            throw new UnsupportedOperationException("Traffic light has no Buzzer.");
+        } else{
+            Buzzer.low();
+        }
+    }
 
 	public void switchAllOff() {
         LedGreen.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);

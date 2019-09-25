@@ -4,6 +4,7 @@ import com.pi4j.io.gpio.*;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
+import sun.net.ConnectionResetException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,6 +83,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 		} else if(state==STATES.S2) {
 			if (event.equals(TIMER_2)) {
 				pedestrians.showGreen();
+				pedestrians.startBuzzer();
 				t3.start(scheduler, PEDESTRIAN_GREEN_TIME);
 				state = STATES.S3;
 				return EXECUTE_TRANSITION;
@@ -89,6 +91,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 		} else if(state==STATES.S3) {
 			if (event.equals(TIMER_3)) {
 				pedestrians.showRed();
+				pedestrians.stopBuzzer();
 				t4.start(scheduler, BOTH_RED_TIME_2);
 				state = STATES.S4;
 				return EXECUTE_TRANSITION;
@@ -172,7 +175,10 @@ public class TrafficLightControllerMachine implements IStateMachine {
 				}
 			} // Continuously read the input from the connection, 12 write a received string to variable fromServer,
 			// and carry out doSomething(fromServer) afterwards.
-		} catch (IOException e) {
+		} catch(ConnectionResetException e) {
+			System.out.println("Server disconnected. Attempting to reconnect...");
+		}
+		catch (IOException e) {
 			System.out.println("Exception caught when attempting to connect to port "
 					+ portNumber + ", or other IO exception:");
 			System.out.println(e.getMessage());
