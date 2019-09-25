@@ -62,15 +62,12 @@ public class CoordinatedTrafficLights implements IStateMachine {
                     long end = System.nanoTime();
 
                     long elapsed = end - start;
-                    System.out.println("Time elapsed: " + (elapsed));
+                    System.out.println("Time elapsed on sending single sync: " + (elapsed));
                     long numberOfSupportableDevices = 60 * (long) Math.pow(10, 9) / elapsed;
                     System.out.println("Given this runspeed, this system will be able support "
                             + numberOfSupportableDevices + " devices.");
 
-                    long start2 = System.currentTimeMillis();
                     out2.println(EXTERNAL_SYNC);
-                    long end2 = System.currentTimeMillis();
-                    System.out.println("Time elapsed 2: " + (end2 - start2));
                 } else {
                     System.out.println("Connections 1 and/or 2 have not been set up yet.");
                 }

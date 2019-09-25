@@ -69,6 +69,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 					return EXECUTE_TRANSITION;
 				}
 			} else if (event.equals(PEDESTRIAN_BUTTON_PRESSED)) {
+				pedestrians.startBuzzer();
 				pedestrianButtonIsPressed = true;
 				state = STATES.S0;
 				return EXECUTE_TRANSITION;
