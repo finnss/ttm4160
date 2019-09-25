@@ -81,10 +81,8 @@ public class TrafficLightPI implements TrafficLight {
         } else {
             boolean on = false;
             while (true) {
-
                 try {
                     if (on) {
-                        
                         System.out.println("Buzzer low");
                         Buzzer.low();
                         Thread.sleep(1);
@@ -95,8 +93,6 @@ public class TrafficLightPI implements TrafficLight {
                         Buzzer.high();
                         Thread.sleep(1);
                     }
-
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
