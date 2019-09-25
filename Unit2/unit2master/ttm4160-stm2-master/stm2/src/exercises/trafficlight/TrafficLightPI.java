@@ -78,8 +78,26 @@ public class TrafficLightPI implements TrafficLight {
     public void startBuzzer() {
         if(Buzzer==null) {
             throw new UnsupportedOperationException("Traffic light has no Buzzer.");
-        } else{
-            Buzzer.high();
+        } else {
+            boolean on = false;
+            while (true) {
+
+                try {
+                    if (on) {
+                        on = true;
+                        Buzzer.high();
+                        Thread.sleep(10);
+                    } else {
+                        on = true;
+                        Buzzer.low();
+                        Thread.sleep(10);
+                    }
+
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
