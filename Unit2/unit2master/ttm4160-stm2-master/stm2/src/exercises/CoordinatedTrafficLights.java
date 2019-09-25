@@ -104,7 +104,11 @@ public class CoordinatedTrafficLights implements IStateMachine {
             System.out.println("Client 2 connected! Waiting for 1 more...");
             // Wait for a call from another client
             Socket clientSocket3 = serverSocket.accept();
-            System.out.println("All three clients connected");
+            System.out.println("Client 3 connected! All three clients connected. Proceeding to communiation.");
+
+            // Starts the synchronizer cycle
+            synchronizer.fire(null, s);
+
             // Wait for a call from another client
             PrintWriter out1 = new PrintWriter(clientSocket1.getOutputStream(), true);
             synchronizer.out1 = out1;

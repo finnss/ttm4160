@@ -67,6 +67,10 @@ public class TrafficLightControllerMachine implements IStateMachine {
 					state = STATES.S0;
 					return EXECUTE_TRANSITION;
 				}
+			} else if (event.equals(PEDESTRIAN_BUTTON_PRESSED)) {
+				pedestrianButtonIsPressed = true;
+				state = STATES.S0;
+				return EXECUTE_TRANSITION;
 			}
 		} else if(state==STATES.S1) {
 			if (event.equals(TIMER_1)) {
@@ -87,6 +91,10 @@ public class TrafficLightControllerMachine implements IStateMachine {
 				pedestrians.showRed();
 				t4.start(scheduler, BOTH_RED_TIME_2);
 				state = STATES.S4;
+				return EXECUTE_TRANSITION;
+			} else if (event.equals(PEDESTRIAN_BUTTON_PRESSED)) {
+				pedestrianButtonIsPressed = true;
+				state = STATES.S3;
 				return EXECUTE_TRANSITION;
 			}
 		} else if(state==STATES.S4) {
@@ -160,7 +168,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 					s.addToQueueLast(EXTERNAL_SYNC);
 				}
 				else {
-					System.out.println("Received different signal than expected.");
+					System.out.println("Received non-sync message.");
 				}
 			} // Continuously read the input from the connection, 12 write a received string to variable fromServer,
 			// and carry out doSomething(fromServer) afterwards.
