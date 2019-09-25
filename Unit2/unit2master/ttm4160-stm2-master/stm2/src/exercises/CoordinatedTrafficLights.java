@@ -40,12 +40,14 @@ public class CoordinatedTrafficLights implements IStateMachine {
     @Override
     public int fire(String event, Scheduler scheduler) {
         if(state==STATES.START_STATE) {
+            System.out.println("Starting the synchronizer...");
             t1.start(scheduler, CYCLE_TIME);
             t2.start(scheduler, OFFSET);
             state = STATES.OFFSET_WAIT;
             return EXECUTE_TRANSITION;
         } else if(state==STATES.OFFSET_WAIT) {
             if (event.equals(TIMER_2)) {
+                System.out.println("30s passed, starting the third light's cycle.");
                 t3.start(scheduler, CYCLE_TIME);
                 state = STATES.CYCLE_1_WAIT;
                 return EXECUTE_TRANSITION;
@@ -54,11 +56,13 @@ public class CoordinatedTrafficLights implements IStateMachine {
             if (event.equals(TIMER_1)) {
                 // Send trigger 1/2
                 if (out1 != null && out2 != null) {
+                    System.out.println("The first two lights' cycle has passed! Sending sync signals.");
                     out1.println(EXTERNAL_SYNC);
                     out2.println(EXTERNAL_SYNC);
                 } else {
                     System.out.println("Connections 1 and/or 2 have not been set up yet.");
                 }
+                System.out.println("Starting the next loop of their cycle...");
                 t1.start(scheduler, CYCLE_TIME);
                 state = STATES.CYCLE_2_WAIT;
                 return EXECUTE_TRANSITION;
@@ -67,10 +71,12 @@ public class CoordinatedTrafficLights implements IStateMachine {
             if (event.equals(TIMER_3)) {
                 // Send trigger 3
                 if (out3 != null) {
+                    System.out.println("The third light's cycle has passed! Sending sync signal.");
                     out3.println(EXTERNAL_SYNC);
                 } else {
                     System.out.println("Connection 3 has not been set up yet.");
                 }
+                System.out.println("Starting the next loop of its' cycle...");
                 t3.start(scheduler, CYCLE_TIME);
                 state = STATES.CYCLE_1_WAIT;
                 return EXECUTE_TRANSITION;
@@ -92,10 +98,13 @@ public class CoordinatedTrafficLights implements IStateMachine {
             System.out.println("Listening on port " + portNumber + "...");
             // portNumber: An integer containing a port number 3 above 1024 to be accessed by the clients
             Socket clientSocket1 = serverSocket.accept();
+            System.out.println("Client 1 connected! Waiting for 2 more...");
             // Wait for a call from a client
             Socket clientSocket2 = serverSocket.accept();
+            System.out.println("Client 2 connected! Waiting for 1 more...");
             // Wait for a call from another client
             Socket clientSocket3 = serverSocket.accept();
+            System.out.println("All three clients connected");
             // Wait for a call from another client
             PrintWriter out1 = new PrintWriter(clientSocket1.getOutputStream(), true);
             synchronizer.out1 = out1;
@@ -107,34 +116,21 @@ public class CoordinatedTrafficLights implements IStateMachine {
             synchronizer.out3 = out3;
             BufferedReader in3 = new BufferedReader(new InputStreamReader(clientSocket3.getInputStream()));
 
-            out1.write("Hello client 1"); // Write string toClient1 to  the first client
-            out2.write("Hello client 2"); // Write string toClient1 to 13 the first client
-            out3.write("Hello client 3"); // Write string toClient1 to 13 the first client
             out1.println("Hello client 1"); // Write string toClient1 to  the first client
             out2.println("Hello client 2"); // Write string toClient1 to 13 the first client
             out3.println("Hello client 3"); // Write string toClient1 to 13 the first client
-            out1.flush();
-            out2.flush();
-            out3.flush();
 
             String fromClient1, fromClient2 = null, fromClient3 = null;
-            System.out.println("Debugging before loop");
-            System.out.println(in1.readLine());
-            System.out.println(in2.readLine());
-            System.out.println(in3.readLine());
             while (
                     (fromClient1 = in1.readLine()) != null ||
                     (fromClient2 = in2.readLine()) != null ||
                     (fromClient3 = in3.readLine()) != null) {
                 // doSomething(fromClient1, fromClient2, fromClient3);
                 System.out.println("Message received at server from one of the clients:");
-                System.out.println(
-                          fromClient1 != null ? "Client 1: " + fromClient1
-                        : fromClient2 != null ? "Client 2: " + fromClient2
-                        : "Client 3: " + fromClient3);
-                System.out.println();
+                System.out.println(fromClient1 != null ? "Client 1 says: " + fromClient1 : "");
+                System.out.println(fromClient2 != null ? "Client 2 says: " + fromClient2 : "");
+                System.out.println(fromClient3 != null ? "Client 3 says: " + fromClient3 : "");
             }
-            System.out.println("Debugging after loop");
             // Continuously read the input from the clients,7write a received string to variable fromClient1 orfromClient2,
             // and carry out doSomething(fromClient1, 18 fromClient2) if a string is received from one of the clients.
         } catch (IOException e) {

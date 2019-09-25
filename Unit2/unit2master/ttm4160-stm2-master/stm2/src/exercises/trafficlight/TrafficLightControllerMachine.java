@@ -54,13 +54,16 @@ public class TrafficLightControllerMachine implements IStateMachine {
 	public int fire(String event, Scheduler scheduler) {
 		if(state==STATES.S0) {
 			if(event.equals(EXTERNAL_SYNC)) {
+				System.out.println("External sync event received from the Scheduler!");
 				if (pedestrianButtonIsPressed) {
+					System.out.println("The button was pressed in time for this sync signal. Starting traffic cycle.");
 					pedestrianButtonIsPressed = false;
 					cars.showYellow();
 					t1.start(scheduler, CAR_YELLOW_TIME);
 					state = STATES.S1;
 					return EXECUTE_TRANSITION;
 				} else {
+					System.out.println("The button was NOT pressed in time for this sync signal. Waiting for next sync.");
 					state = STATES.S0;
 					return EXECUTE_TRANSITION;
 				}
@@ -153,6 +156,7 @@ public class TrafficLightControllerMachine implements IStateMachine {
 			while ((fromServer = in.readLine()) != null) {
 				System.out.println("Received from server: " + fromServer);
 				if (fromServer.equals(EXTERNAL_SYNC)) {
+					System.out.println("Received External sync signal! Sending it to the scheduler.");
 					s.addToQueueLast(EXTERNAL_SYNC);
 				}
 				else {
