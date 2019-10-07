@@ -1,6 +1,7 @@
 package runtime;
 
 import java.lang.Thread;
+import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -9,6 +10,7 @@ public class Scheduler extends Thread {
 	/* This simplified scheduler only has one single state machine */
 	private IStateMachine stm;
 	private BlockingDeque<String> inputQueue = new LinkedBlockingDeque<String>();
+	private HashMap<String, String> displayMessages = new HashMap<>();
 	private String name;
 
 	public Scheduler(IStateMachine stm) {
@@ -41,6 +43,10 @@ public class Scheduler extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void addDisplayMessage(String eventId, String payload) {
+		displayMessages.put(eventId, payload);
 	}
 
 	/**

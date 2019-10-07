@@ -31,12 +31,17 @@ public class MQTTclient implements MqttCallback {
 			scheduler.addToQueueLast("MQTTError");
 		}		
 	}
-	
 
 	
 	public void connectionLost(Throwable e) {
 		System.err.println("Connection lost: " + e);
 		scheduler.addToQueueLast("ConnectionLost");
+		try {
+			client.disconnect();
+		} catch (MqttException e1) {
+			System.err.println("MQTT Exception: " + e);
+			scheduler.addToQueueLast("MQTTError");
+		}
 	}
 	
 	public void deliveryComplete(IMqttDeliveryToken token) {
@@ -44,13 +49,25 @@ public class MQTTclient implements MqttCallback {
 	}
 	
 	public void messageArrived(String topic, MqttMessage mess) {
-
+		System.out.println("messageArrived");
+		String eventId = "" + mess.getId();
+		scheduler.addToQueueLast(eventId);
+		scheduler.addDisplayMessage(eventId, new String(mess.getPayload()));
 	}
 
 	public void sendMessage(String topic, MqttMessage mess) {
 		try {
 			System.out.println("Sending message");
 			client.publish(topic, mess);
+		} catch (MqttException e) {
+			System.err.println("MQTT Exception: " + e);
+			scheduler.addToQueueLast("MQTTError");
+		}
+	}
+
+	public void subscribe(String topicFilter) {
+		try {
+			client.subscribe(topicFilter);
 		} catch (MqttException e) {
 			System.err.println("MQTT Exception: " + e);
 			scheduler.addToQueueLast("MQTTError");
