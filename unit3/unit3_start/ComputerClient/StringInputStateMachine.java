@@ -24,7 +24,8 @@ public class StringInputStateMachine implements IStateMachine {
 
     public static void main (String[] args) {
         StringInputStateMachine stateMachine = new StringInputStateMachine();
-        StringInputThread inputThread = new StringInputThread(stateMachine);
+        Scheduler s = new Scheduler(stateMachine);
+        StringInputThread inputThread = new StringInputThread(s);
 
         stateMachine.inputThread = inputThread;
     }
