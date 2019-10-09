@@ -16,6 +16,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import static piClient.LEDMatrixStateMachine.MESSAGE_RECEIVED;
 
 public class MQTTclient implements MqttCallback {
+
+	public final static String broker = "tcp://broker.hivemq.com:1883";
+	public final static boolean conf = true;
+	public final static String topic = "ttm4160_Led";
 	
 	private Scheduler scheduler;
 	private MqttClient client;
@@ -59,7 +63,11 @@ public class MQTTclient implements MqttCallback {
 		String eventId = "" + mess.getId();
 		scheduler.addToQueueLast(MESSAGE_RECEIVED);
 		scheduler.addDisplayMessage(eventId, new String(mess.getPayload()));
-		payloadQueue.addLast(mess);
+		addToQueueLast(mess);
+	}
+
+	public synchronized void addToQueueLast(MqttMessage message) {
+		payloadQueue.addLast(message);
 	}
 
 	public void sendMessage(String topic, MqttMessage mess) {

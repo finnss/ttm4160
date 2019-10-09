@@ -6,6 +6,10 @@ import runtime.Scheduler;
 import runtime.Timer;
 import sensehat.LEDMatrixTicker;
 
+import static piClient.MQTTclient.broker;
+import static piClient.MQTTclient.conf;
+import static piClient.MQTTclient.topic;
+
 public class LEDMatrixStateMachine implements IStateMachine {
 
     public static final String TIMER_1 = "t1", MESSAGE_RECEIVED = "MessageReceived";
@@ -16,7 +20,7 @@ public class LEDMatrixStateMachine implements IStateMachine {
 
     protected STATES state = STATES.LISTEN_STATE;
 
-    private final int WRITE_INTERVAL = 100;
+    private final int WRITE_INTERVAL = 200;
 
     private LEDMatrixTicker ticker;
     private MQTTclient mqttClient;
@@ -78,10 +82,7 @@ public class LEDMatrixStateMachine implements IStateMachine {
         stateMachine.setTicker(ticker);
 
         // Set up MQTT client
-        String broker = "tcp://broker.hivemq.com:1883";
         String myAddress = "pi";
-        boolean conf = true;
-        String topic = "ttm4160_Led";
 
         MQTTclient mqttClient = new MQTTclient(broker, myAddress, conf, s);
         mqttClient.subscribe(topic);

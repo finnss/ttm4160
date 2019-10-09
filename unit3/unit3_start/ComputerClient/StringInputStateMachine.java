@@ -1,10 +1,12 @@
 package ComputerClient;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import piClient.MQTTclient;
 import runtime.IStateMachine;
 import runtime.Scheduler;
-
-import java.util.concurrent.Semaphore;
+import static piClient.MQTTclient.broker;
+import static piClient.MQTTclient.conf;
+import static piClient.MQTTclient.topic;
 
 public class StringInputStateMachine implements IStateMachine {
 
@@ -20,35 +22,44 @@ public class StringInputStateMachine implements IStateMachine {
     public int fire(String event, Scheduler scheduler) {
         if(state==STATES.WAIT_STATE) {
             if (event.equals(INPUT_ACQUIRED)) {
+                MqttMessage message = mqttClient.takePayload();
+                mqttClient.sendMessage(topic, message);
                 state = STATES.WAIT_STATE;
                 return EXECUTE_TRANSITION;
             } else {
-                System.out.println("Unexpected event received");
+                try {
+                    System.out.println("Initial fire event");
+                    getInput();
+                    state = STATES.WAIT_STATE;
+                    return EXECUTE_TRANSITION;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return DISCARD_EVENT;
     }
 
     public void getInput() throws InterruptedException {
+        System.out.println("Sending unblock signal");
         inputThread.releaseSemaphore();
     }
 
     public static void main (String[] args) {
         StringInputStateMachine stateMachine = new StringInputStateMachine();
         Scheduler s = new Scheduler(stateMachine);
-        StringInputThread inputThread = new StringInputThread(s);
-
-        stateMachine.inputThread = inputThread;
 
         // Set up MQTT client
-        String broker = "tcp://broker.hivemq.com:1883";
         String myAddress = "pc";
-        boolean conf = true;
-        String topic = "ttm4160_Led";
         MQTTclient mqttClient = new MQTTclient(broker, myAddress, conf, s);
         mqttClient.subscribe(topic);
         stateMachine.mqttClient = mqttClient;
 
+        StringInputThread inputThread = new StringInputThread(s, mqttClient);
+
+        stateMachine.inputThread = inputThread;
+
+        inputThread.start();
         s.start();
     }
 }
