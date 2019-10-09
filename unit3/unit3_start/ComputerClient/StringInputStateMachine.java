@@ -1,5 +1,6 @@
 package ComputerClient;
 
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 
@@ -11,11 +12,20 @@ public class StringInputStateMachine implements IStateMachine {
 
     public static final String INPUT_ACQUIRED = "InputAcquired";
 
-    private enum STATES {LISTEN_STATE, WRITING_STATE}
+    private enum STATES {WAIT_STATE}
+    protected STATES state = STATES.WAIT_STATE;
 
     @Override
     public int fire(String event, Scheduler scheduler) {
-        return 0;
+        if(state==STATES.WAIT_STATE) {
+            if (event.equals(INPUT_ACQUIRED)) {
+                state = STATES.WAIT_STATE;
+                return EXECUTE_TRANSITION;
+            } else {
+                System.out.println("Unexpected event received");
+            }
+        }
+        return DISCARD_EVENT;
     }
 
     public void getInput() throws InterruptedException {
