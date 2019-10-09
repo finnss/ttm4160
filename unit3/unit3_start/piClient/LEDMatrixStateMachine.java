@@ -30,20 +30,6 @@ public class LEDMatrixStateMachine implements IStateMachine {
     private MQTTclient mqttClient;
     LinkedList<String> buffer = new LinkedList();
 
-    public int readBuffer(Scheduler scheduler) {
-        if (buffer.size() == 1) {
-            String toProcess = buffer.getFirst();
-
-            ticker.StartWriting(toProcess);
-            ticker.WritingStep();
-            t1.start(scheduler, WRITE_INTERVAL);
-            state = STATES.WRITING_STATE;
-        } else {
-            state = STATES.LISTEN_STATE;
-        }
-        return EXECUTE_TRANSITION;
-    }
-
     @Override
     public int fire(String event, Scheduler scheduler) {
         if(state==STATES.LISTEN_STATE) {
@@ -56,7 +42,18 @@ public class LEDMatrixStateMachine implements IStateMachine {
 
                 buffer.add(0, payload);
 
-                return readBuffer(scheduler);
+                System.out.println("Reading buffer");
+                if (buffer.size() == 1) {
+                    String toProcess = buffer.getFirst();
+
+                    ticker.StartWriting(toProcess);
+                    ticker.WritingStep();
+                    t1.start(scheduler, WRITE_INTERVAL);
+                    state = STATES.WRITING_STATE;
+                } else {
+                    state = STATES.LISTEN_STATE;
+                }
+                return EXECUTE_TRANSITION;
 
             } else {
                 System.out.println("Unexpected event received");
@@ -77,7 +74,12 @@ public class LEDMatrixStateMachine implements IStateMachine {
                 state = STATES.WRITING_STATE;
                 return EXECUTE_TRANSITION;
             } else if (event.equals("LEDMatrixTickerFinished")) {
-                return readBuffer(scheduler);
+                String toProcess = buffer.getFirst();
+                ticker.StartWriting(toProcess);
+                ticker.WritingStep();
+                t1.start(scheduler, WRITE_INTERVAL);
+                state = STATES.LISTEN_STATE;
+                return EXECUTE_TRANSITION;
             }
             else {
                 System.out.println("Unexpected event received");
