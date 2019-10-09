@@ -6,6 +6,10 @@ import runtime.Scheduler;
 import runtime.Timer;
 import sensehat.LEDMatrixTicker;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import static piClient.MQTTclient.broker;
 import static piClient.MQTTclient.conf;
 import static piClient.MQTTclient.topic;
@@ -14,7 +18,7 @@ public class LEDMatrixStateMachine implements IStateMachine {
 
     public static final String TIMER_1 = "t1", MESSAGE_RECEIVED = "MessageReceived";
 
-    private enum STATES {LISTEN_STATE, WRITING_STATE}
+    private enum STATES {LISTEN_STATE, WRITING_STATE, READING_BUFFER}
 
     private Timer t1 = new Timer("t1");
 
@@ -24,6 +28,21 @@ public class LEDMatrixStateMachine implements IStateMachine {
 
     private LEDMatrixTicker ticker;
     private MQTTclient mqttClient;
+    LinkedList<String> buffer = new LinkedList();
+
+    public int readBuffer(Scheduler scheduler) {
+        if (buffer.size() == 1) {
+            String toProcess = buffer.getFirst();
+
+            ticker.StartWriting(toProcess);
+            ticker.WritingStep();
+            t1.start(scheduler, WRITE_INTERVAL);
+            state = STATES.WRITING_STATE;
+        } else {
+            state = STATES.LISTEN_STATE;
+        }
+        return EXECUTE_TRANSITION;
+    }
 
     @Override
     public int fire(String event, Scheduler scheduler) {
@@ -35,11 +54,10 @@ public class LEDMatrixStateMachine implements IStateMachine {
                 System.out.println("Got payload!");
                 System.out.println(payload);
 
-                ticker.StartWriting(payload);
-                ticker.WritingStep();
-                t1.start(scheduler, WRITE_INTERVAL);
-                state = STATES.WRITING_STATE;
-                return EXECUTE_TRANSITION;
+                buffer.add(0, payload);
+
+                return readBuffer(scheduler);
+
             } else {
                 System.out.println("Unexpected event received");
             }
@@ -52,9 +70,14 @@ public class LEDMatrixStateMachine implements IStateMachine {
                 ticker.WritingStep();
                 state = STATES.WRITING_STATE;
                 return EXECUTE_TRANSITION;
-            } else if (event.equals("LEDMatrixTickerFinished")) {
-                state = STATES.LISTEN_STATE;
+            } else if (event.equals(MESSAGE_RECEIVED)) {
+                MqttMessage mess = mqttClient.takePayload();
+                String payload = new String(mess.getPayload());
+                buffer.add(0, payload);
+                state = STATES.WRITING_STATE;
                 return EXECUTE_TRANSITION;
+            } else if (event.equals("LEDMatrixTickerFinished")) {
+                return readBuffer(scheduler);
             }
             else {
                 System.out.println("Unexpected event received");
