@@ -1,13 +1,10 @@
-package mqtt;
+package piClient;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
 import sensehat.LEDMatrixTicker;
-
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class LEDMatrixStateMachine implements IStateMachine {
 

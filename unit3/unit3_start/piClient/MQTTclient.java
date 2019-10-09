@@ -1,4 +1,4 @@
-package mqtt;
+package piClient;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -13,7 +13,7 @@ import runtime.Scheduler;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import static mqtt.LEDMatrixStateMachine.MESSAGE_RECEIVED;
+import static piClient.LEDMatrixStateMachine.MESSAGE_RECEIVED;
 
 public class MQTTclient implements MqttCallback {
 	
