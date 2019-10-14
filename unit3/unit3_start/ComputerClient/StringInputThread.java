@@ -1,9 +1,12 @@
 package ComputerClient;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import piClient.MQTTclient;
+import ComputerPiSharedCode.MQTTclient;
 import runtime.Scheduler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -38,10 +41,32 @@ public class StringInputThread extends Thread {
         semaphore.release();
     }
 
+    /*
     private String readInput() {
         System.out.println("Please write input to be displayed on the pi!");
         System.out.print("> ");
         return input.nextLine();
+    }
+    */
+
+    private String readInput() {
+        try {
+            // To be friendly
+            sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> strings = new ArrayList<>(Arrays.asList(
+                "Hello, Finn!",
+                "Hello, Rikke!",
+                "Hello, World!",
+                "All your base are belong to us",
+                "Such a cyber-physical system"
+        ));
+        String toSend = strings.get(new Random().nextInt(strings.size()));
+        System.out.println("Sending automatic message to the Pi:");
+        System.out.print(toSend);
+        return toSend;
     }
 
     public void run() {

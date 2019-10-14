@@ -1,18 +1,17 @@
 package piClient;
 
+import ComputerPiSharedCode.MQTTclient;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import runtime.IStateMachine;
 import runtime.Scheduler;
 import runtime.Timer;
 import sensehat.LEDMatrixTicker;
 
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
-import static piClient.MQTTclient.broker;
-import static piClient.MQTTclient.conf;
-import static piClient.MQTTclient.topic;
+import static ComputerPiSharedCode.MQTTclient.broker;
+import static ComputerPiSharedCode.MQTTclient.conf;
+import static ComputerPiSharedCode.MQTTclient.topic;
 
 public class LEDMatrixStateMachine implements IStateMachine {
 
@@ -44,11 +43,9 @@ public class LEDMatrixStateMachine implements IStateMachine {
 
                 System.out.println("Reading buffer");
                 if (buffer.size() == 1) {
-                    String toProcess = buffer.getFirst();
-
+                    String toProcess = buffer.removeFirst();
                     ticker.StartWriting(toProcess);
                     ticker.WritingStep();
-                    t1.start(scheduler, WRITE_INTERVAL);
                     state = STATES.WRITING_STATE;
                 } else {
                     state = STATES.LISTEN_STATE;
@@ -74,10 +71,15 @@ public class LEDMatrixStateMachine implements IStateMachine {
                 state = STATES.WRITING_STATE;
                 return EXECUTE_TRANSITION;
             } else if (event.equals("LEDMatrixTickerFinished")) {
-                String toProcess = buffer.getFirst();
-                ticker.StartWriting(toProcess);
-                ticker.WritingStep();
-                t1.start(scheduler, WRITE_INTERVAL);
+                if (buffer.size() > 0) {
+                    String toProcess = buffer.removeFirst();
+                    ticker.StartWriting(toProcess);
+                    ticker.WritingStep();
+                    state = STATES.WRITING_STATE;
+                    return EXECUTE_TRANSITION;
+                }
+                // This message transmits the freepool back
+                mqttClient.sendMessage(topic, new MqttMessage());
                 state = STATES.LISTEN_STATE;
                 return EXECUTE_TRANSITION;
             }

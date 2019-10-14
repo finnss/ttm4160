@@ -1,12 +1,12 @@
 package ComputerClient;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import piClient.MQTTclient;
+import ComputerPiSharedCode.MQTTclient;
 import runtime.IStateMachine;
 import runtime.Scheduler;
-import static piClient.MQTTclient.broker;
-import static piClient.MQTTclient.conf;
-import static piClient.MQTTclient.topic;
+import static ComputerPiSharedCode.MQTTclient.broker;
+import static ComputerPiSharedCode.MQTTclient.conf;
+import static ComputerPiSharedCode.MQTTclient.topic;
 
 public class StringInputStateMachine implements IStateMachine {
 
