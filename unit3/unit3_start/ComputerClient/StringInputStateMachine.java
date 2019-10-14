@@ -6,6 +6,7 @@ import runtime.IStateMachine;
 import runtime.Scheduler;
 
 import static ComputerPiSharedCode.MQTTclient.*;
+import static piClient.LEDMatrixStateMachine.MESSAGE_RECEIVED;
 
 public class StringInputStateMachine implements IStateMachine {
 
@@ -30,6 +31,8 @@ public class StringInputStateMachine implements IStateMachine {
                 }
                 state = STATES.WAIT_STATE;
                 return EXECUTE_TRANSITION;
+            } else if (event.equals(MESSAGE_RECEIVED)) {
+                System.out.println("Message Received in PC state machine. Freepool handling is done elsewhere, so do nothing here!");
             } else {
                 try {
                     System.out.println("Initial fire event");

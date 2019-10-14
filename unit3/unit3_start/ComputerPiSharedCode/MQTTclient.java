@@ -79,9 +79,14 @@ public class MQTTclient implements MqttCallback {
 
 		freePoolHandler.handleFreepoolArrived(freepool);
 
+		if (topic.equals(pc_topic)) {
+			System.out.println("Message arrived to PC; dont handle it!");
+			return;
+		}
+
 		String eventId = "" + mess.getId();
 		scheduler.addToQueueLast(MESSAGE_RECEIVED);
-		scheduler.addDisplayMessage(eventId, new String(mess.getPayload()));
+		scheduler.addDisplayMessage(eventId, payload);
 		addToQueueLast(mess);
 	}
 
