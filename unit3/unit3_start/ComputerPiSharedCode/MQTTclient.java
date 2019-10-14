@@ -90,6 +90,7 @@ public class MQTTclient implements MqttCallback {
 	}
 
 	public void sendMessage(String topic, MqttMessage mess) {
+		System.out.println("Sending to topic: " + topic);
 		try {
 			System.out.println("Sending message if freepool is available.");
 			String freepool = freePoolHandler.getFreepoolOrQueue(mess);
@@ -111,6 +112,7 @@ public class MQTTclient implements MqttCallback {
 
 	public void subscribe(String topicFilter) {
 		try {
+			System.out.println("Subscribing to " + topicFilter + "...");
 			client.subscribe(topicFilter);
 		} catch (MqttException e) {
 			System.err.println("MQTT Exception: " + e);
