@@ -87,6 +87,7 @@ public class MQTTclient implements MqttCallback {
 		String eventId = "" + mess.getId();
 		scheduler.addToQueueLast(MESSAGE_RECEIVED);
 		scheduler.addDisplayMessage(eventId, payload);
+		mess.setPayload(payload.getBytes());
 		addToQueueLast(mess);
 	}
 
