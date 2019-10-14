@@ -9,9 +9,7 @@ import sensehat.LEDMatrixTicker;
 
 import java.util.LinkedList;
 
-import static ComputerPiSharedCode.MQTTclient.broker;
-import static ComputerPiSharedCode.MQTTclient.conf;
-import static ComputerPiSharedCode.MQTTclient.topic;
+import static ComputerPiSharedCode.MQTTclient.*;
 
 public class LEDMatrixStateMachine implements IStateMachine {
 
@@ -79,7 +77,7 @@ public class LEDMatrixStateMachine implements IStateMachine {
                     return EXECUTE_TRANSITION;
                 }
                 // This message transmits the freepool back
-                mqttClient.sendMessage(topic, new MqttMessage());
+                mqttClient.sendMessage(pc_topic, new MqttMessage());
                 state = STATES.LISTEN_STATE;
                 return EXECUTE_TRANSITION;
             }
@@ -112,7 +110,7 @@ public class LEDMatrixStateMachine implements IStateMachine {
         String myAddress = "pi";
 
         MQTTclient mqttClient = new MQTTclient(broker, myAddress, conf, s);
-        mqttClient.subscribe(topic);
+        mqttClient.subscribe(pi_topic);
 
         stateMachine.setMqttClient(mqttClient);
     }

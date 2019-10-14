@@ -65,7 +65,7 @@ public class StringInputThread extends Thread {
         ));
         String toSend = strings.get(new Random().nextInt(strings.size()));
         System.out.println("Sending automatic message to the Pi:");
-        System.out.print(toSend);
+        System.out.println(toSend);
         return toSend;
     }
 

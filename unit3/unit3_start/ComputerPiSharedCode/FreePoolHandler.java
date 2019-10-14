@@ -3,18 +3,20 @@ package ComputerPiSharedCode;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.*;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class FreePoolHandler extends Thread {
 
     private LinkedList<MqttMessage> blockedMessages;
-    private LinkedList<String> availableFreepools;
+    private LinkedBlockingDeque<String> availableFreepools;
     private int numberOfFreepools;
 
     private List<String> freepoolNames;
 
     public FreePoolHandler(int numberOfFreepools) {
         this.blockedMessages = new LinkedList<>();
-        this.availableFreepools = new LinkedList<>();
+        this.availableFreepools = new LinkedBlockingDeque<>();
         this.freepoolNames = new ArrayList<>();
         this.numberOfFreepools = numberOfFreepools;
 
@@ -29,11 +31,17 @@ public class FreePoolHandler extends Thread {
     public String getFreepoolOrQueue(MqttMessage message) {
         if (availableFreepools.size() == 0) {
             blockedMessages.add(message);
-            return null; // Returning null means no freepool was available
-        } else {
-            String takenFreepool = availableFreepools.removeFirst();
-            return takenFreepool;
+            // return null; // Returning null means no freepool was available
         }
+        String takenFreepool = null;
+        try {
+            System.out.println("This should block...");
+            takenFreepool = availableFreepools.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return takenFreepool;
+
     }
 
     public void handleFreepoolArrived(String freepool) {
@@ -47,7 +55,7 @@ public class FreePoolHandler extends Thread {
             availableFreepools.add(freepool);
         }
         if (blockedMessages.size() > 0) {
-
+            // TODO: Send next
         }
     }
 

@@ -4,9 +4,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import ComputerPiSharedCode.MQTTclient;
 import runtime.IStateMachine;
 import runtime.Scheduler;
-import static ComputerPiSharedCode.MQTTclient.broker;
-import static ComputerPiSharedCode.MQTTclient.conf;
-import static ComputerPiSharedCode.MQTTclient.topic;
+
+import static ComputerPiSharedCode.MQTTclient.*;
 
 public class StringInputStateMachine implements IStateMachine {
 
@@ -23,7 +22,12 @@ public class StringInputStateMachine implements IStateMachine {
         if(state==STATES.WAIT_STATE) {
             if (event.equals(INPUT_ACQUIRED)) {
                 MqttMessage message = mqttClient.takePayload();
-                mqttClient.sendMessage(topic, message);
+                mqttClient.sendMessage(pi_topic, message);
+                try {
+                    getInput();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 state = STATES.WAIT_STATE;
                 return EXECUTE_TRANSITION;
             } else {
@@ -52,7 +56,7 @@ public class StringInputStateMachine implements IStateMachine {
         // Set up MQTT client
         String myAddress = "pc";
         MQTTclient mqttClient = new MQTTclient(broker, myAddress, conf, s);
-        mqttClient.subscribe(topic);
+        mqttClient.subscribe(pc_topic);
         stateMachine.mqttClient = mqttClient;
 
         StringInputThread inputThread = new StringInputThread(s, mqttClient);

@@ -19,7 +19,8 @@ public class MQTTclient implements MqttCallback {
 
 	public final static String broker = "tcp://broker.hivemq.com:1883";
 	public final static boolean conf = true;
-	public final static String topic = "ttm4160_Led";
+	public final static String pi_topic = "ttm4160_Led_Pi";
+	public final static String pc_topic = "ttm4160_Led_PC";
 	
 	private Scheduler scheduler;
 	private MqttClient client;
@@ -57,17 +58,21 @@ public class MQTTclient implements MqttCallback {
 	}
 	
 	public void deliveryComplete(IMqttDeliveryToken token) {
-		System.out.println("Delivery complete.");
+		System.out.println("Delivery complete.\n");
 	}
 	
 	public void messageArrived(String topic, MqttMessage mess) {
 		System.out.println("messageArrived");
-		String[] splitPayload = new String(mess.getPayload()).split(",");
+		String payload = new String(mess.getPayload());
+		String[] splitPayload = payload.split(",");
 		String freepool = splitPayload[splitPayload.length - 1];
-		String payload = "";
+
+		/*
 		for (String payloadPart : splitPayload) {
 			payload += payloadPart + ",";
 		}
+		*/
+		payload = payload.substring(0, payload.length() - (freepool.length() + 1));
 
 		System.out.println("Done parsong payload. Frepool: " + freepool);
 		System.out.println("Payload: " + payload + "\n");
@@ -91,6 +96,8 @@ public class MQTTclient implements MqttCallback {
 			if (freepool != null) {
 				System.out.println("Acquired freepool! " + freepool);
 				byte[] payloadWithFreepool = (new String(mess.getPayload()) + "," + freepool).getBytes();
+				System.out.println("Payload with freepool:");
+				System.out.println(new String(payloadWithFreepool));
 				mess.setPayload(payloadWithFreepool);
 				client.publish(topic, mess);
 			} else {
