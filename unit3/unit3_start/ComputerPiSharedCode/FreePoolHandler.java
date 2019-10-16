@@ -54,9 +54,6 @@ public class FreePoolHandler extends Thread {
         if (!availableFreepools.contains(freepool)) {
             availableFreepools.add(freepool);
         }
-        if (blockedMessages.size() > 0) {
-            // TODO: Send next
-        }
     }
 
 
