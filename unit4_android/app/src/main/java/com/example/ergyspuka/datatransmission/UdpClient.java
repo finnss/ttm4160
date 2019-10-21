@@ -117,14 +117,22 @@ public class UdpClient extends Thread {
                 json.put("currentTimestamp", currentTimestamp);
                 json.put("communicationTechnology", udpCommunicationTechnology);
 
-                myLocation = mParent.mCurrentPositionService.getLocation();
-                json.put("latitude", myLocation.getLatitude());
-                json.put("longitude", myLocation.getLongitude());
+                Location mLocation = mParent.mCurrentPositionService.getLocation();
+                double latitutde = -1;
+                double longitude = -1;
+                if (mLocation != null) {
+                    latitutde = mLocation.getLatitude();
+                    longitude = mLocation.getLongitude();
+                }
+                json.put("latitude", latitutde);
+                json.put("longitude", longitude);
 
                 mySignalStrength = "" + mParent.mSignalStrengthService.getSignalStrength();
                 json.put("signalStrength", mySignalStrength);
 
                 json.put("roundTripDelay", myRoundTripDelay);
+
+                System.out.println("Packet to send: " + json.toString());
 
                 byte[] bytePayload = json.toString().getBytes();
                 packet = new DatagramPacket(bytePayload, bytePayload.length, address, dstPort);

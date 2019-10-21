@@ -95,16 +95,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/udpTextView"
-            android:text="192.168.0.196"
+            android:text="192.168.0.194"
             android:hint="dstAddress" />
         <!--
-            android:text="129.241.200.202"-->
+            android:text="129.241.200.202"
+
+            -->
         <EditText
             android:id="@+id/udp_port"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/udp_address"
-            android:text="4422"
+            android:text="4423"
             android:hint="dstPort" />
         <EditText
             android:id="@+id/udp_time_slot"

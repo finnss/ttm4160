@@ -2,6 +2,9 @@ package com.example.ergyspuka.datatransmission;
 
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -18,6 +21,7 @@ public class UdpReceivePackets extends Thread {
     UdpClient uct = null;
     boolean active;
     String received;
+    byte[] buf = new byte[2048];
 
     Long rcvUdpPacketTime = null;
     Long sendUdpPacketTime = null;
@@ -45,24 +49,36 @@ public class UdpReceivePackets extends Thread {
             try {
                 System.out.println("Receiving...");
 
-                long currentTimestamp = System.currentTimeMillis();
-                byte[] timestampForBuffer = ("" + currentTimestamp).getBytes();
-                DatagramPacket receivedPacket = new DatagramPacket(timestampForBuffer, timestampForBuffer.length);
+                DatagramPacket receivedPacket = new DatagramPacket(buf, buf.length);
                 datagramSocket.receive(receivedPacket);
                 String payload = new String(
                         receivedPacket.getData(), 0, receivedPacket.getLength());
                 System.out.println("Received payload: " + payload);
 
-                currentTimestamp = System.currentTimeMillis();
+                /*
+                JSONObject jsonObject = new JSONObject(payload);
+                System.out.println("jsonObject:" + jsonObject.toString());
+                long timestamp = (long) jsonObject.get("currentTimestamp");
+                System.out.println("timestamp:" + timestamp);
+                */
+
+                long currentTimestamp = System.currentTimeMillis();
                 long sentTimestamp = Long.parseLong(payload);
                 long roundTripTime = currentTimestamp - sentTimestamp;
 
                 uct.setRoundTripDelay(roundTripTime);
 
+
             } catch (IOException e) {
                 System.out.println("IOexception! " + e.toString());
                 e.printStackTrace();
             }
+            /*
+            catch (JSONException err){
+                err.printStackTrace();
+            }
+             */
+
         }
     }
 

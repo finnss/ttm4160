@@ -290,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 //URL of the UDP Server
                 udpIPAddress = udpAddress.getText().toString();
                 udpPortNumber = udpPort.getText().toString();
+                System.out.println("udpPortNumber" + udpPortNumber);
 
 
                 testUdpServerConnection = new TestUdpServerConnection(MainActivity.this,
