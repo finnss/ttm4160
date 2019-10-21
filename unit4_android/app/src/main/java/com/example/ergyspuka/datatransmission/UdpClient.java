@@ -6,6 +6,11 @@ package com.example.ergyspuka.datatransmission;
 
 import android.net.NetworkInfo;
 import android.location.Location;
+import android.os.Looper;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -54,6 +59,20 @@ public class UdpClient extends Thread {
         dstPort = port;
     }
 
+    public void setRoundTripDelay(long rtt) {
+        this.myRoundTripDelay = rtt;
+        System.out.println("Logged round trip delay: " + rtt);
+        mParent.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(
+                        mParent.getBaseContext(),
+                        "Round trip time: " + myRoundTripDelay,
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
     @Override
     public void run() {
         udpPacketSendingPeriod = Integer.parseInt(mParent.getUdpPeriod());
@@ -74,11 +93,16 @@ public class UdpClient extends Thread {
 
             //Calling athe Receiving Thread and setting the variable Active to True
             myRcvThread = new UdpReceivePackets(socket, this);
-            System.out.println("Setting the variable Active to True!");
+            System.out.println("Setting the variable Active to True!!");
             myRcvThread.setActive(true);
             myRcvThread.start();
 
             Thread.sleep(2000);
+
+            DatagramPacket packet;
+            long currentTimestamp;
+            String payload;
+            JSONObject json;
 
             while (getUdpActive()) {
                 System.out.println("after continue one ...");
@@ -87,7 +111,24 @@ public class UdpClient extends Thread {
                 Thread.sleep(udpPacketSendingPeriod);
 
                 // From here, it is your turn!
+                json = new JSONObject();
 
+                currentTimestamp = System.currentTimeMillis();
+                json.put("currentTimestamp", currentTimestamp);
+                json.put("communicationTechnology", udpCommunicationTechnology);
+
+                myLocation = mParent.mCurrentPositionService.getLocation();
+                json.put("latitude", myLocation.getLatitude());
+                json.put("longitude", myLocation.getLongitude());
+
+                mySignalStrength = "" + mParent.mSignalStrengthService.getSignalStrength();
+                json.put("signalStrength", mySignalStrength);
+
+                json.put("roundTripDelay", myRoundTripDelay);
+
+                byte[] bytePayload = json.toString().getBytes();
+                packet = new DatagramPacket(bytePayload, bytePayload.length, address, dstPort);
+                socket.send(packet);
             }
 
 
@@ -97,6 +138,8 @@ public class UdpClient extends Thread {
             setUdpActive(false);
             //myRcvThread.setActive(false);
 
+        } catch (JSONException e) {
+            e.printStackTrace();
         } catch (UnknownHostException e) {
             e.printStackTrace();
             System.out.println("UnknownHostException - Setting the variable Active to False!");

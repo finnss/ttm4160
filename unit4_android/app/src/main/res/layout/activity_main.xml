@@ -95,8 +95,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/udpTextView"
-            android:text="129.241.200.202"
+            android:text="localhost"
             android:hint="dstAddress" />
+        <!--
+            android:text="129.241.200.202"-->
         <EditText
             android:id="@+id/udp_port"
             android:layout_width="match_parent"
