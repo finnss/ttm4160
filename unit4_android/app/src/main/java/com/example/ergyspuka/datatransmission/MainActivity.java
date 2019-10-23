@@ -237,9 +237,9 @@ public class MainActivity extends AppCompatActivity {
                     isBoundLocalization = getApplicationContext().bindService(mCurrentPositionServiceIntent, currentPositionServiceConnection, Context.BIND_AUTO_CREATE);
                     localizationServiceRunning = true;
                     //Starting the Localization Maps API Service
-                    startService(mCurrentPositionServiceMapsAPIIntent);
-                    isBoundLocalizationMapsAPI = getApplicationContext().bindService(mCurrentPositionServiceMapsAPIIntent, currentPositionServiceMapsAPIConnection, Context.BIND_AUTO_CREATE);
-                    localizationMapsAPIServiceRunning = true;
+                    // startService(mCurrentPositionServiceMapsAPIIntent);
+                    // isBoundLocalizationMapsAPI = getApplicationContext().bindService(mCurrentPositionServiceMapsAPIIntent, currentPositionServiceMapsAPIConnection, Context.BIND_AUTO_CREATE);
+                    // localizationMapsAPIServiceRunning = true;
 
                 } else if ((startServicesClicked == true) && (!udpCommunicationRunning)) {
                     System.out.println("The Stop Signal Strength and Localization Services Button is clicked!");
@@ -324,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("The UDP Button is clicked");
 
 
-                if ((udpClicked == false) && (signalStrengthServiceRunning && localizationServiceRunning && localizationMapsAPIServiceRunning)) {
+                if ((udpClicked == false) && (signalStrengthServiceRunning && localizationServiceRunning)) {
 
                     System.out.println("Start UDP!");
                     udpButton.setText("Stop UDP Communication");
@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
                     udpClientThread.start();
 
                     udpButton.setEnabled(true);
-                }  else if ((udpClicked == false) && (!signalStrengthServiceRunning && !localizationServiceRunning && !localizationMapsAPIServiceRunning)){
+                }  else if ((udpClicked == false) && (!signalStrengthServiceRunning && !localizationServiceRunning)){
 
                     Toast.makeText(v.getContext(), "Please, check if the services have been started correctly!", Toast.LENGTH_SHORT).show();
 

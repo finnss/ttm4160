@@ -70,6 +70,7 @@ public class CurrentPositionService extends Service implements LocationListener,
 
     public Location getLocation() {
         try {
+            System.out.println("Trying to get location...");
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
             locationManager.addGpsStatusListener(this);
 
@@ -79,18 +80,21 @@ public class CurrentPositionService extends Service implements LocationListener,
 
             // if GPS Enabled get lat/long using GPS Services
             if (isGPSEnabled) {
-                //System.out.println("The GPS system is enabled");
+                System.out.println("The GPS system is enabled");
                 locationManager.requestLocationUpdates(
                         LocationManager.GPS_PROVIDER,
                         MIN_TIME_BW_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                 //Log.d("Android Location:", "GPS enabled");
+                System.out.println("locationManager: " + locationManager);
                 if (locationManager != null) {
                     setLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    System.out.println("lastKnownLocation: ");
+                    System.out.println(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                     if (location != null) {
                         latitude = location.getLatitude();
                         longitude = location.getLongitude();
-                        //System.out.println("isGPSEnabled --- latitude: " + latitude + ", longitude: " + longitude);
+                        System.out.println("isGPSEnabled --- latitude: " + latitude + ", longitude: " + longitude);
                     }
                 }
             } else {

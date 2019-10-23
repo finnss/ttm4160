@@ -79,9 +79,16 @@ public class UdpClient extends Thread {
         try {
             info = Connectivity.getNetworkInfo(mParent.getApplicationContext());
             if (info != null && info.isConnected()) {
-                System.out.println("info.getTypeName(): " + info.getTypeName());
-                System.out.println("info.getSubtypeName(): " + info.getSubtypeName());
-                udpCommunicationTechnology = info.getSubtypeName();
+                String typeName = info.getTypeName();
+                String subTypeName = info.getSubtypeName();
+                System.out.println("info.getTypeName(): " + typeName);
+                System.out.println("info.getSubtypeName(): " + subTypeName);
+                if (typeName == "") {
+                    udpCommunicationTechnology = subTypeName;
+                } else {
+                    udpCommunicationTechnology = typeName;
+                }
+
             } else {
                 System.out.println("There is no connection available in this android mobile phone or android phone emulator");
                 udpCommunicationTechnology = null;
