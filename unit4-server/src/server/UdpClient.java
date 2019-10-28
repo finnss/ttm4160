@@ -19,7 +19,7 @@ class UdpClient extends Thread {
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[256];
-    private String address = "192.168.0.198";
+    private String address = "192.168.43.162";
     private int port = 4423;
 
     private SchedulerData scheduler;

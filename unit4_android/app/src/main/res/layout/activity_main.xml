@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/udpTextView"
-            android:text="192.168.0.194"
+            android:text="192.168.43.151"
             android:hint="dstAddress" />
         <!--
             android:text="129.241.200.202"
