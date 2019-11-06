@@ -1,0 +1,10 @@
+[
+  {
+    "roomName": "someName",
+    "availability": [false, true, false],
+    "location": {
+      "lat" : "someLat",
+      "long" : "someLong"
+    }
+  }
+]
