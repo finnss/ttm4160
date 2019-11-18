@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 import Reserve from "./reserve";
 import Confirmation from "./confirmation";
+import Reservations from "./reservations";
+import About from "./about";
 import { Link } from "react-router-dom";
 
 export default function Routes(props) {
@@ -24,6 +26,11 @@ export default function Routes(props) {
         </Route>
         <Route path="/confirmation">
           <Confirmation {...props} />
+        <Route path="/reservations">
+          <Reservations {...props} />
+        </Route>
+        <Route path="/about">
+          <About {...props} />
         </Route>
         <Route path="/">
           <Frontpage {...props} />
