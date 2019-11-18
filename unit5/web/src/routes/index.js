@@ -26,6 +26,7 @@ export default function Routes(props) {
         </Route>
         <Route path="/confirmation">
           <Confirmation {...props} />
+        </Route>
         <Route path="/reservations">
           <Reservations {...props} />
         </Route>

@@ -7,17 +7,11 @@ function Frontpage(props) {
   return (
     <div className="frontpage">
       <div className="routeButtons">
-        <Link to="/reserve">
-          <button>Book</button>
-        </Link>
         <Link to="/reservations">
-          <button>Reservations</button>
+          <button>My Reservations</button>
         </Link>
         <Link to="/favorites">
           <button>Favorites</button>
-        </Link>
-        <Link to="/confirmation">
-          <button>My reservations</button>
         </Link>
         <Link to="/about">
           <button>About us</button>
@@ -25,7 +19,6 @@ function Frontpage(props) {
       </div>
       <Bathrooms {...props} />
     </div>
-    
   );
 }
 

@@ -1,7 +1,7 @@
 .routeButtons {
   display: flex;
   flex-direction: row;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 .routeButtons > a {
   margin-bottom: 15px;
