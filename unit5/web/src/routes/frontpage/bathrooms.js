@@ -15,22 +15,28 @@ function Bathrooms({ bathrooms }: props) {
   return (
     <div className="bathrooms">
       {headerRow}
-      {bathrooms.map(bathroom => {
-        const isFullyOccupied =
-          bathroom.numberOfOccupiedStalls + bathroom.numberOfReservedStalls >=
-          bathroom.numberOfStalls;
-        console.log("occ", bathroom, isFullyOccupied);
-        return (
-          <div className="tableRow bathroom">
-            <div>{bathroom.roomName}</div>
-            <div style={{ color: isFullyOccupied ? "red" : "green" }}>
-              {isFullyOccupied ? "Full" : "Free"}
+      {bathrooms
+        .map(bathroom => ({
+          ...bathroom,
+          distance: Math.floor(Math.random() * 100)
+        }))
+        .sort((a, b) => a.distance - b.distance)
+        .map(bathroom => {
+          const isFullyOccupied =
+            bathroom.numberOfOccupiedStalls + bathroom.numberOfReservedStalls >=
+            bathroom.numberOfStalls;
+
+          return (
+            <div className="tableRow bathroom">
+              <div>{bathroom.roomName}</div>
+              <div style={{ color: isFullyOccupied ? "red" : "green" }}>
+                {isFullyOccupied ? "Full" : "Free"}
+              </div>
+              <div>{bathroom.distance}m</div>
+              <Link to="/reserve">Reserve ></Link>
             </div>
-            <div>30m</div>
-            <Link to="/reserve">Reserve ></Link>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }

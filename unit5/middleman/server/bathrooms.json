@@ -1,7 +1,23 @@
 [
   {
-    "roomName": "someName",
+    "roomName": "Room 1",
     "numberOfStalls": 3,
+    "location": {
+      "lat" : "someLat",
+      "long" : "someLong"
+    }
+  },
+  {
+    "roomName": "Room 2",
+    "numberOfStalls": 5,
+    "location": {
+      "lat" : "someLat",
+      "long" : "someLong"
+    }
+  },
+  {
+    "roomName": "Room 3",
+    "numberOfStalls": 4,
     "location": {
       "lat" : "someLat",
       "long" : "someLong"
