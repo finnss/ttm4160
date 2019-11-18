@@ -16,31 +16,31 @@ import java.net.Socket;
 
 import adc.Mcp3008Interface;
 
-
+import static ComputerPiSharedCode.MQTTclient.MESSAGE_RECEIVED;
 
 public class PiSTM implements IStateMachine {
 	
 	private MQTTclient mqttClient;
     LinkedList<String> buffer = new LinkedList();
 
-	public static final String RECEVE_SENSOR_DATA = "Receive sensor data", RECEIVE_ACK = "Receive Ack",
+	public static final String RECEVE_SENSOR_DATA = "Receive sensor data",
 	TIMER_1 = "t1", TIMER_2  = "t2";
 
-	public static final String[] EVENTS = {RECEVE_SENSOR_DATA, RECEIVE_ACK};
+	public static final String[] EVENTS = {RECEVE_SENSOR_DATA};
 
 	private enum STATES {S0, S1, S2}
 
 	private Timer t1 = new Timer("t1");
-	private Timer t1 = new Timer("t2");
+	private Timer t2 = new Timer("t2");
 
 	private final int
 		SENSOR_UPDATE_FREQUENCY = 1000,
 		TIMEOUT = 200;
 
-	protected STATES state = STATES.S0;
+	protected STATES state = STATES.INIT;
 
 	static int numberOfToilets = 1;
-	private boolean occupied[];
+	boolean occupied[];
 	private int numberOfOccupiedToilets = 0;
 	private int numberOfOccupiedToiletsTemp = 0;
 	
@@ -54,6 +54,14 @@ public class PiSTM implements IStateMachine {
 	}
 
 	public int fire(String event, Scheduler scheduler) {
+		if(state==STATES.INIT)
+		{
+			for (int i = 0; i < numberOfToilets; i++){
+				occupied[i] = false;
+			}
+			state = STATES.S0;
+			return EXECUTE_TRANSITION;
+		}
 		if(state==STATES.S0) {
 			if(event.equals(TIMER_1)) {
 				
@@ -88,7 +96,7 @@ public class PiSTM implements IStateMachine {
 				state = STATES.S0;
 				return EXECUTE_TRANSITION;
 			}
-			if(event.equals(RECEIVE_ACK)){
+			if(event.equals(MESSAGE_RECEIVED)){
 				numberOfOccupiedToilets = numberOfOccupiedToiletsTemp;
 				state = STATES.S0;
 				return EXECUTE_TRANSITION;
@@ -107,10 +115,6 @@ public class PiSTM implements IStateMachine {
 
 		//Initialize ADC
 		mcp3008Init();
-		
-		for (int i = 0; i < numberOfToilets; i++){
-		occupied[i] = false;
-	}
 
 		s.start();
 
