@@ -1,0 +1,13 @@
+.bathrooms {
+}
+
+.tableRow {
+  display: flex;
+  flex-direction: roe;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.headerRow {
+  font-weight: 600;
+}
