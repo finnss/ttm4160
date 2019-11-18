@@ -20,3 +20,10 @@
   display: flex;
   justify-content: space-between;
 }
+
+.time button {
+  width: 50px;
+  color: white;
+  padding: 0px;
+  border: 0;
+}

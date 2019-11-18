@@ -4,7 +4,8 @@ import moment from "moment";
 import TimePicker from "react-time-picker";
 
 function Reserve({ bathrooms }: props) {
-  const [startTime, setStartTime] = useState(moment());
+  console.log("hello world", moment().format("hh:ss"));
+  const [startTime, setStartTime] = useState(moment().format("hh:ss"));
 
   return (
     <div className="reserve">
@@ -19,7 +20,7 @@ function Reserve({ bathrooms }: props) {
           </select>
         </div>
 
-        <div className="inputRow">
+        <div className="inputRow time">
           <label>From:</label>
           <TimePicker
             value={startTime}
