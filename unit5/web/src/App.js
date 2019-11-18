@@ -6,6 +6,7 @@ import { hot } from "react-hot-loader/root";
 function App() {
   const [bathrooms, setBathrooms] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [myReservations, setMyReservations] = useState([]);
 
   useEffect(() => {
     const url = "http://localhost:8080";
@@ -31,6 +32,11 @@ function App() {
           reservations={reservations}
           setBathrooms={setBathrooms}
           setReservations={setReservations}
+          myReservations={myReservations}
+          setMyReservations={setMyReservations}
+          addReservationToState={newReg =>
+            setMyReservations([...myReservations, newReg])
+          }
         />
       </header>
     </div>
