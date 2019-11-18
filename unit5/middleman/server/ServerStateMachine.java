@@ -13,17 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static server.HTTPClient.addBathroom;
-import static server.HTTPClient.getBathrooms;
 import static server.MQTTclient.*;
 
 
 public class ServerStateMachine extends Thread implements IStateMachineData {
 
-    public static final String INPUT_ACQUIRED = "InputAcquired", START_WRITING = "StartWriting",
-            STOP_WRITING = "StopWriting", CHOOSE_FILE_NAME = "ChooseFileName";
-
-    public static final String[] EVENTS = {START_WRITING, STOP_WRITING, CHOOSE_FILE_NAME};
+    public static final String MESSAGE_RECEIVED = "MESSAGE_RECEIVED";
 
     private enum STATES {WAIT_STATE}
 
@@ -35,28 +30,36 @@ public class ServerStateMachine extends Thread implements IStateMachineData {
     @Override
     public int fire(String event, Object object, Scheduler scheduler) {
         if (state == STATES.WAIT_STATE) {
-            if (event.equals(INPUT_ACQUIRED)) {
-                JSONObject payload = (JSONObject) object;
-                System.out.println("Received payload in state machine");
-                System.out.println(payload.toString());
+            if (event.equals(MESSAGE_RECEIVED)) {
+                try {
+                    JSONObject payload = null;
+                    payload = new JSONObject((String) object);
+                    System.out.println("Received payload in state machine");
+                    System.out.println(payload.toString());
+
+                    // Forward received bathroom to
+                    HTTPClient.postRequest((JSONObject) payload, "bathrooms");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 // mqttClient.sendMessage(payload.toString());
 
                 state = STATES.WAIT_STATE;
                 return EXECUTE_TRANSITION;
             } else {
+                System.out.println("Unexpected Event received in Wait State.");
+                    /*
                 try {
-                    System.out.println("Unexpected Event received in Wait State.");
-
                     String bathrooms = getBathrooms();
                     System.out.println("Bathrooms: " + bathrooms);
 
                     addBathroom(new JSONObject("{\"location\":{\"lat\":\"someLat\",\"long\":\"someLong\"},\"availability\":[false,false,false],\"roomName\":\"someName\"}"));
                     System.out.println("Added through state machine");
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                */
             }
         } else {
             System.out.println("Event received while in unexpected state.");
@@ -73,16 +76,19 @@ public class ServerStateMachine extends Thread implements IStateMachineData {
         MQTTclient mqttClient = new MQTTclient(broker, myAddress, conf, s);
         mqttClient.subscribe(pc_topic);
 
-        // Initial bathrooms
+        // Initial bathrooms and reservations
         try {
-            System.out.println("Reading initial bathrooms");
+            System.out.println("Making initial test data");
             String bathroomsRaw = new String(Files.readAllBytes(Paths.get("server/bathrooms.json")), StandardCharsets.UTF_8);
-            System.out.println(bathroomsRaw);
             JSONArray bathrooms = new JSONArray(bathroomsRaw);
             for (int i = 0; i < bathrooms.length(); i++) {
-                System.out.println("Bathroom nr" + i);
-                System.out.println(bathrooms.get(i));
-                HTTPClient.addBathroom((JSONObject) bathrooms.get(i));
+                HTTPClient.postRequest((JSONObject) bathrooms.get(i), "bathrooms");
+            }
+
+            String reservationsRaw = new String(Files.readAllBytes(Paths.get("server/reservations.json")), StandardCharsets.UTF_8);
+            JSONArray reservations = new JSONArray(reservationsRaw);
+            for (int i = 0; i < reservations.length(); i++) {
+                HTTPClient.postRequest((JSONObject) reservations.get(i), "reservations");
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();

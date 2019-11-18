@@ -17,32 +17,31 @@ public class BathroomController {
     private final AtomicLong counter = new AtomicLong();
     private List<Bathroom> bathrooms = new ArrayList<>();
 
-    @RequestMapping(value = "/bathrooms", method = RequestMethod.GET)
-    public Bathroom bathrooms() {
-        System.out.println("Received get request");
-        LinkedHashMap<String, String> location = new LinkedHashMap();
-        location.put("lat", "someLat");
-        location.put("long", "someLong");
-        return new Bathroom("someName", 3, location);
+    @CrossOrigin(origins = "*")
+    @RequestMapping(value = "/bathrooms", method = RequestMethod.GET, produces="application/json")
+    public ResponseEntity bathrooms() {
+        System.out.println("Received get request for bathrooms");
+        if (bathrooms.size() == 0) {
+            System.out.println("There were no Bathrooms to show; generating a template one.");
+            LinkedHashMap<String, String> location = new LinkedHashMap();
+            location.put("lat", "someLat");
+            location.put("long", "someLong");
+            bathrooms.add(new Bathroom("someName", 3, location));
+        }
+        return new ResponseEntity(bathrooms, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(
             value="/bathrooms", method=RequestMethod.POST, consumes="application/json", produces="application/json"
     )
     public ResponseEntity addBathroom(@RequestBody LinkedHashMap bathroomRaw) {
-        System.out.println("Received post request");
-        System.out.println(bathroomRaw);
         String roomName = (String) bathroomRaw.get("roomName");
-        ArrayList<Boolean> availability = (ArrayList<Boolean>) bathroomRaw.get("availability");
+        int numberOfStalls = (int) bathroomRaw.get("numberOfStalls");
         LinkedHashMap location = (LinkedHashMap) bathroomRaw.get("location");
 
-        System.out.println("roomName: " + roomName);
-        System.out.println("availability: " + availability);
-        System.out.println("location: " + location);
-        Bathroom bathroom = new Bathroom(roomName, availability, location);
+        Bathroom bathroom = new Bathroom(roomName, numberOfStalls, location);
         bathrooms.add(bathroom);
-        System.out.print("bathroom: ");
-        System.out.println(bathroom);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 }

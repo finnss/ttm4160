@@ -1,7 +1,7 @@
 [
   {
     "roomName": "someName",
-    "availability": [false, true, false],
+    "numberOfStalls": 3,
     "location": {
       "lat" : "someLat",
       "long" : "someLong"

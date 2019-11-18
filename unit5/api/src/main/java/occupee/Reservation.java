@@ -8,16 +8,26 @@ import java.util.UUID;
 public class Reservation {
     private UUID id;
     private UUID bathroomId;
-    private int stall;
+    // private int stall;
     private long fromTimestamp;
     private int durationInMinutes;
 
-    public Reservation(UUID bathroomId, int stall, long fromTimestamp, int durationInMinutes) {
+    public Reservation(UUID bathroomId, long fromTimestamp, int durationInMinutes) {
         this.id = UUID.randomUUID();
         this.bathroomId = bathroomId;
-        this.stall = stall;
         this.fromTimestamp = fromTimestamp;
         this.durationInMinutes = durationInMinutes;
+    }
+
+    public Reservation(UUID bathroomId, long fromTimestamp) {
+        this.id = UUID.randomUUID();
+        this.bathroomId = bathroomId;
+        this.fromTimestamp = fromTimestamp;
+        this.durationInMinutes = 5;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public UUID getBathroomId() {
@@ -26,14 +36,6 @@ public class Reservation {
 
     public void setBathroomId(UUID bathroomId) {
         this.bathroomId = bathroomId;
-    }
-
-    public int getStall() {
-        return stall;
-    }
-
-    public void setStall(int stall) {
-        this.stall = stall;
     }
 
     public long getFromTimestamp() {

@@ -15,10 +15,10 @@ import java.util.Map;
 
 public class HTTPClient {
 
-    public static String getBathrooms() {
+    public static String getRequest(String endpoint) {
         try {
-            System.out.println("Fetching bathrooms...");
-            URL url = new URL("http://localhost:8080/bathrooms");
+            System.out.println("Fetching...");
+            URL url = new URL("http://localhost:8080/" + endpoint);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", "application/json");
@@ -36,7 +36,7 @@ public class HTTPClient {
 
             String result = content.toString();
 
-            System.out.print("Received bathrooms: ");
+            System.out.print("Received: ");
             System.out.println(result + "\n");
             return result;
         } catch (ProtocolException | MalformedURLException e) {
@@ -48,11 +48,11 @@ public class HTTPClient {
     }
 
 
-    public static void addBathroom(JSONObject bathroom) {
-        System.out.println("Adding bathroom...");
-        System.out.println(bathroom.toString());
+    public static void postRequest(JSONObject payload, String endpoint) {
+        System.out.println("Sending payload...");
+        System.out.println(payload.toString());
         try {
-            URL url = new URL("http://localhost:8080/bathrooms");
+            URL url = new URL("http://localhost:8080/" + endpoint);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
@@ -61,8 +61,8 @@ public class HTTPClient {
 
             con.setDoOutput(true);
             try( DataOutputStream out = new DataOutputStream( con.getOutputStream())) {
-                byte[] payload = bathroom.toString().getBytes("utf-8");
-                out.write(payload, 0, payload.length);
+                byte[] bytePayload = payload.toString().getBytes("utf-8");
+                out.write(bytePayload, 0, bytePayload.length);
             }
 
             try(BufferedReader br = new BufferedReader(

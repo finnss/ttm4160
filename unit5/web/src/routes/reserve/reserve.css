@@ -1,0 +1,22 @@
+.reserve,
+.reserve form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reserve form select,
+.reserve form input {
+  margin-bottom: 10px;
+}
+
+.reserve form label {
+  margin-right: 15px;
+}
+
+.inputRow {
+  width: 300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
