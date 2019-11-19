@@ -19,8 +19,8 @@ public class MQTTclient implements MqttCallback {
 
 	public final static String broker = "tcp://broker.hivemq.com:1883";
 	public final static boolean conf = true;
-	public final static String pi_topic = "ttm4160_Led_Pi";
-	public final static String pc_topic = "ttm4160_Led_PC";
+	public final static String pi_topic = "ttm4160_To_Pi";
+	public final static String pc_topic = "ttm4160_To_PC";
 	
 	private Scheduler scheduler;
 	private MqttClient client;

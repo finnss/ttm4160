@@ -65,7 +65,7 @@ public class Mcp3008Interface {
 	 
 	 
 	 
-    public void mcp3008Init() throws InterruptedException, IOException {
+    public static void mcp3008Init() throws InterruptedException, IOException {
 
         // print program title/header
         // console.title("<-- The Pi4J Project -->", "SPI test program using MCP3004/MCP3008 AtoD Chip");
@@ -85,6 +85,7 @@ public class Mcp3008Interface {
         // see the link below for the data sheet on the MCP3004/MCP3008 chip:
         // http://ww1.microchip.com/downloads/en/DeviceDoc/21294E.pdf
 
+	console.print(String.format(" INIT ADC")); // print 4 digits with leading zeros
         // create SPI object instance for SPI for communication
         spi = SpiFactory.getInstance(SpiChannel.CS0,
                 SpiDevice.DEFAULT_SPI_SPEED, // default spi speed 1 MHz
@@ -98,7 +99,7 @@ public class Mcp3008Interface {
      * @return conversion value for specified analog input channel
      * @throws IOException
      */
-    public static int mcp3008ReadChannel(short channel) throws IOException {
+    public static int mcp3008ReadChannel(int channel) throws IOException {
 
         // create a data buffer and initialize a conversion request payload
         byte data[] = new byte[] {

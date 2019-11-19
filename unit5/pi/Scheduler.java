@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import com.pi4j.util.Console;
 public class Scheduler extends Thread {
 
+	protected static final Console console = new Console();
 	/* This simplified scheduler only has one single state machine */
 	private IStateMachine stm;
 	private BlockingDeque<String> inputQueue = new LinkedBlockingDeque<String>();
@@ -25,18 +27,20 @@ public class Scheduler extends Thread {
 
 	public void run() {
 		boolean running = true;
+		console.print(String.format("Starting STM\n ")); // print 4 digits with leading zeros
 		while(running) {
 			try {
 				// wait for a new event arriving in the queue
 				String event = inputQueue.take();
 
+				console.print(String.format("Run STM\n ")); // print 4 digits with leading zeros
 				// execute a transition
-				log(name + ": firing state machine with event: " + event);
+				//log(name + ": firing state machine with event: " + event);
 				int result = stm.fire(event, this);
 				if(result==IStateMachine.DISCARD_EVENT) {
-					log(name + ": Discarded Event: " + event);
+				//	log(name + ": Discarded Event: " + event);
 				} else if(result==IStateMachine.TERMINATE_SYSTEM) {
-					log(name + ": Terminating System... Good bye!");
+				//	log(name + ": Terminating System... Good bye!");
 					running = false;
 				}
 			} catch (InterruptedException e) {
